@@ -10,7 +10,7 @@ import time
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 
-@shared_task
+# @shared_task
 def handle_csv_img(file_json, request_id):
     try:
         request_obj = ProcessingRequest.objects.get(request_id = request_id)

@@ -36,7 +36,8 @@ def upload_file(request):
         file_json = df.to_json(orient='records') 
 
         # Sending JSON instead of file because celery tasks only accepts json serializable objects
-        handle_csv_img.delay(file_json=file_json, request_id=obj.request_id)  
+        # handle_csv_img.delay(file_json=file_json, request_id=obj.request_id)  
+        handle_csv_img(file_json=file_json, request_id=obj.request_id)  
 
         return Response({"request_id":obj.request_id, 'message': 'File Processing Started...'}, status=status.HTTP_200_OK)
 
@@ -70,14 +71,6 @@ def webhook_reciever(request):
         if request_obj.status != ProcessingRequest.Status.COMPLETED:
             return Response({ "data": {"request_id":str(request_obj.request_id), "status": request_obj.status}, "message": "Process not yet completed"}, status=status.HTTP_200_OK)
 
-        # csv_filename = f"output_{request_id}.csv"
-        # csv_path = os.path.join("media", "processed_csv", csv_filename)
-
-        # if not os.path.exists(csv_path):
-        #     return Response({ "data": {"request_id":str(request_obj.request_id), "status": request_obj.status}, "message": "Process completed but CSV file not found"}, status=status.HTTP_200_OK)
-
-        # csv_download_url = request.build_absolute_uri(f"/media/processed_csv/{csv_filename}")
-        
         return Response(
             { "data": {"request_id": str(request_obj.request_id), "status": request_obj.status, "csv_download_url": request_obj.csv_output_url}, 
               "message": "Processing completed successfully"
