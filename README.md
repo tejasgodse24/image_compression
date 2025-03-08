@@ -17,7 +17,7 @@ AWS EC2, AWS S3 Bucket, Nginx, GitHub, Gunicorn, Supervisor(for celery configura
 ### Steps to run the application
 1) Clone the Project
    
-2) Start Django Server for Backend
+2) Start Django Server 
    1) Create Virtual Env
       - create virtual environment using `python -m venv venv` in root folder.
       - activate that virtualenv using `venv/scripts/activate`(Windows) / `source venv/bin/activate`(Ubuntu)
@@ -33,11 +33,10 @@ AWS EC2, AWS S3 Bucket, Nginx, GitHub, Gunicorn, Supervisor(for celery configura
 ### Database Schema:
 ![alt text](https://imgcompress-bkt.s3.ap-south-1.amazonaws.com/DBSchema.png)
 
-
 ### Low-Level Design(LLD):
-[text](https://imgcompress-bkt.s3.ap-south-1.amazonaws.com/img_compression.drawioFinal.pdf)
+https://imgcompress-bkt.s3.ap-south-1.amazonaws.com/img_compression.drawioFinal.pdf
 
 
 ### API Documentation:
-[text](https://documenter.getpostman.com/view/31971917/2sAYdoF7M5)
+https://documenter.getpostman.com/view/31971917/2sAYdoF7M5
 
