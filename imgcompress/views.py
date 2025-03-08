@@ -36,8 +36,8 @@ def upload_file(request):
         file_json = df.to_json(orient='records') 
 
         # Sending JSON instead of file because celery tasks only accepts json serializable objects
-        # handle_csv_img.delay(file_json=file_json, request_id=obj.request_id)  
-        handle_csv_img(file_json=file_json, request_id=obj.request_id)  
+        handle_csv_img.delay(file_json=file_json, request_id=obj.request_id)  
+        # handle_csv_img(file_json=file_json, request_id=obj.request_id)  
 
         return Response({"request_id":obj.request_id, 'message': 'File Processing Started...'}, status=status.HTTP_200_OK)
 

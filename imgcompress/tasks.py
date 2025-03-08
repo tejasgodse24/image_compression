@@ -10,7 +10,7 @@ import time
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 
-# @shared_task
+@shared_task
 def handle_csv_img(file_json, request_id):
     try:
         request_obj = ProcessingRequest.objects.get(request_id = request_id)
@@ -69,14 +69,6 @@ def compress_img(img_url, product_obj):
             
         image = Image.open(io.BytesIO(response.content))
 
-        # output_path = os.path.join(settings.MEDIA_ROOT ,"compressed_images", f"compressed_img_{str(img_obj.img_id)}")
-
-        # # Save the compressed image
-        # image.save(output_path, format="JPEG", quality=50, optimize=True)
-
-        # img_obj.compressed_img_url = output_path
-        # img_obj.save()
-
         img_io = io.BytesIO()
         image.save(img_io, format="JPEG", quality=50, optimize=True)
         img_io.seek(0)
@@ -113,18 +105,6 @@ def generate_output_csv(request_id):
             })
 
         df = pd.DataFrame(data)
-
-        # # Ensure directory exists
-        # csv_dir = os.path.join(settings.MEDIA_ROOT, "processed_csv")
-        # os.makedirs(csv_dir, exist_ok=True)
-
-        # #  Save CSV
-        # csv_filename = f"output_{request_id}.csv"
-        # csv_path = os.path.join(csv_dir, csv_filename)
-        # df.to_csv(csv_path, index=False)
-        
-        # return csv_filename
-
 
         # Convert CSV to bytes
         csv_io = io.StringIO()
