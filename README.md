@@ -40,3 +40,6 @@ https://imgcompress-bkt.s3.ap-south-1.amazonaws.com/img_compression.drawioFinal.
 ### API Documentation:
 https://documenter.getpostman.com/view/31971917/2sAYdoF7M5
 
+
+###  Postman Collection Link :
+https://www.postman.com/research-saganist-31972975/workspace/public-workspace/collection/31971917-a987b618-0bff-4508-953a-47443ff2c1a8?action=share&creator=31971917
