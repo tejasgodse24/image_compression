@@ -12,13 +12,15 @@ from django.core.files.storage import default_storage
 
 @shared_task
 def handle_csv_img(file_json, request_id):
-    try:
-        request_obj = ProcessingRequest.objects.get(request_id = request_id)
 
+    request_obj = ProcessingRequest.objects.get(request_id = request_id)
+
+    try:
         df = pd.read_json(io.StringIO(file_json))
         
-        if "Input Image Urls" not in df.columns or "Product Name" not in df.columns:
+        if "Input Image Urls" not in df.columns or "Product Name" not in df.columns or "S. No." not in df.columns:
             request_obj.status = ProcessingRequest.Status.FAILED
+            request_obj.status_reason = "One of column Input Image Urls, Product Name, S. No. not exists in file"
             request_obj.save()
             return
 
@@ -46,6 +48,7 @@ def handle_csv_img(file_json, request_id):
         # change status of request
         request_obj.status = ProcessingRequest.Status.COMPLETED
         request_obj.csv_output_url = csv_path
+        request_obj.status_reason = "File Processing Completed Successfully"
         request_obj.save()
 
         # call webhook 
@@ -54,19 +57,21 @@ def handle_csv_img(file_json, request_id):
     except Exception as e:
         # change status of request
         request_obj.status = ProcessingRequest.Status.FAILED
+        request_obj.status_reason = str(e)
         request_obj.save()
-        print(e)
 
 
 
 def compress_img(img_url, product_obj):
+
+    img_obj = ProductImage.objects.create(product = product_obj, input_img_url = img_url)
+
     try:
         response = requests.get(img_url, stream=True)
         if response.status_code != 200:
-            raise Exception("Failed to download image")
+            img_obj.compressed_img_url = ""
+            img_obj.save()
         
-        img_obj = ProductImage.objects.create(product = product_obj, input_img_url = img_url)
-            
         image = Image.open(io.BytesIO(response.content))
 
         img_io = io.BytesIO()
@@ -82,6 +87,8 @@ def compress_img(img_url, product_obj):
         img_obj.save()
 
     except Exception as e:
+        img_obj.compressed_img_url = ""
+        img_obj.save()
         print("error: ", e)
 
 
@@ -106,7 +113,7 @@ def generate_output_csv(request_id):
 
         df = pd.DataFrame(data)
 
-        # Convert CSV to bytes
+        # Convert df to csv
         csv_io = io.StringIO()
         df.to_csv(csv_io, index=False)
         csv_io.seek(0)
@@ -119,7 +126,7 @@ def generate_output_csv(request_id):
 
     except Exception as e:
         print("Error generating CSV:", e)
-        return None
+        return ""
     
 
 from django.conf import settings

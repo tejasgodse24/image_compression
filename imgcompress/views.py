@@ -56,9 +56,9 @@ def check_status(request, request_id):
     try:
         request_obj = ProcessingRequest.objects.get(request_id = request_id)
     except Exception as e:
-        return Response({"request_id": "0", "status": "Request Not Found" }, status=404)
+        return Response({"request_id": "0", "status": "Request Not Found", "message":"Request Not Found" }, status=404)
     
-    return Response({ "request_id": str(request_obj.request_id), "status": request_obj.status})
+    return Response({ "request_id": str(request_obj.request_id), "status": request_obj.status, "message":request_obj.status_reason})
 
 
 @api_view(['POST'])

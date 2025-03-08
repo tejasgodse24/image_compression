@@ -18,6 +18,7 @@ class ProcessingRequest(models.Model):
         choices=Status.choices,
         default=Status.IN_PROGRESS
     )
+    status_reason = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     csv_output_url = models.URLField(null=True, blank=True)
