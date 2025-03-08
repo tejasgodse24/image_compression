@@ -19,10 +19,16 @@ def upload_file(request):
 
     uploaded_file = request.FILES['file']
     file_name = uploaded_file.name
+    file_size_mb = round(uploaded_file.size  / (1024 * 1024), 2)
+    # print("file_size_mb", file_size_mb)
 
     try:
         if not file_name.endswith(('.csv', '.xls', '.xlsx')):
             return Response({"request_id": "0", 'message': "Unsupported file format. Use CSV or Excel."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if file_size_mb > 10:
+            return Response({"request_id": "0", 'message': "Upload file less than 10 mb"}, status=status.HTTP_400_BAD_REQUEST)
+
 
         obj = ProcessingRequest.objects.create()
 
